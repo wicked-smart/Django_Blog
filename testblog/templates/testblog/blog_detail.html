@@ -1,0 +1,154 @@
+{% extends "testblog/layout.html" %}
+
+{% block title %}
+blog detail page
+{% endblock %}
+
+{% block stylesheet %}
+    <style>
+        #foobar{
+            display: flex;
+           width: 800px;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .faketextarea{
+            border: 2px solid black;
+            width: 400px;
+            padding: 5px
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block script %}
+
+
+{% endblock %}
+
+{% block body %}
+
+{% if purpose == "blog_detail" %}
+
+    <h1>Blog {{ blog.id }} detail page :- </h1>
+    <br/><hr/>
+    <div>
+        <div id="foobar">
+            <div >
+                <h3>Title:- {{ blog.title }} &nbsp;&nbsp; </h3>
+            <div style="display:flex; flex-direction: row; gap: 5px; margin-top: -20px;">
+                <p>Last-Modified at: {{ blog.last_modified }}</p>
+            <p>created at: {{ blog.created_at }}</p>
+            </div>
+            
+            </div>
+            
+            <div style="display: flex; align-items: center;">
+                <a href="{% url 'edit' blog.id  %}" style="top: 20px">edit post</a>&nbsp;&nbsp;
+                <a href="{% url 'edit' blog.id  %}">save post</a>&nbsp;&nbsp;
+                <a href="{% url 'logout'  %}">logout</a>
+            </div>
+            
+        </div>
+        
+        {% if purpose == 'edit' %}
+            <form action="{% url 'edit' blog.id %}" method="post" >
+                {% csrf_token %}
+
+                <input id="fake_textarea_content" type="hidden" name="blog" >
+                <div class="faketextarea" id="fake_textarea" contenteditable="true">
+                    {{ blog.content }}
+                </div>
+                    
+                    
+                
+                <br>
+                <input type="submit" name="submit" value="cancel">
+                <input type="submit" name="submit" value="publish">
+
+            </form>
+            <br>
+            
+        {% else %}
+            <p><b>Blog Content:-</b> {{ blog.content| linebreaks }}</p>
+        {% endif %}
+    </div>
+
+    <h2>comments :- </h2>
+
+    {% if request.user.is_authenticated %}
+    <form method="POST" action="{% url 'comments' blog.id %}">
+
+        {% csrf_token %}
+
+        <label for="comment">Type your comment here :- </label>
+        <input type="text" id="comment" name="comment">
+        <input type="submit" value="post">
+    </form>
+
+    <ul>
+
+    {% for comment in blog.comments.all.reverse %}
+        {% if comment.is_parent %}
+            <b>{{ comment.written_by.username }} : </b>
+            {{ comment.content }}
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp; 
+            <form method="post" action="{% url 'replies' blog.id %}">
+
+                {% csrf_token %}
+                
+                &nbsp;&nbsp;&nbsp;&nbsp; <input type="text" name="reply" placeholder="reply..." >
+                <input type="hidden" name="parent" value="{{ comment.id }}">
+                <input type="submit" value="post">
+
+            </form>
+
+            <ul>
+                {% for reply in comment.children %}
+                &nbsp;&nbsp;&nbsp; <b>{{ reply.written_by.username }} : </b>
+                {{ reply.content }}
+                <br>
+                <br>
+                {% endfor %}
+            </ul>
+            
+
+
+
+        {% endif %} 
+    {% endfor %}
+
+    {% else %}
+        <a href="{% url 'login' %}">login</a> to see comments !
+        <br/>
+        <br/>
+
+    {% endif %}
+
+    </ul>
+ 
+{% else %}
+
+    <h1>Draft detail :- </h1>
+    <hr><br>
+
+    <div style="display: flex; flex-direction: row; width: 600px; justify-content: space-between">
+        <h2>{{ draft.title }}</h2>
+        <a style="margin-top: 20px" href="{% url 'post_blog' %}">continue writing</a>
+    </div>
+
+    <div>
+        <p>{{ draft.content }} </p>
+    </div>
+    <br>
+{% endif %}
+
+    <a href="{% url 'index' %}"> <-- Home </a>
+    
+
+
+
+{% endblock %}

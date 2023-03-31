@@ -1,0 +1,34 @@
+{% extends 'testblog/layout.html' %}
+
+{% block title %}
+    blogs
+{% endblock %}
+
+{% block body %}
+
+    
+
+    {% if request.user.is_authenticated %}
+    <div>
+        logged in as <b>{{ request.user }}</b>
+        <div style="display: inline-block ; margin-left: 650px">
+            <a href="{% url 'post_blog' %}">write new blog</a>&nbsp;&nbsp;
+            <a href="{% url 'draft' %}">drafts</a>&nbsp;&nbsp;
+            <a href="#">bookmarks</a>&nbsp;&nbsp;
+            <a href="{% url 'logout' %}">logout</a>&nbsp;&nbsp;
+        </div>
+    </div>
+        
+        
+    {% endif %}
+    <hr>
+
+    <h1>List of blogs :- </h1>
+    </hr>
+    <br/>
+
+    {% for blog in blogs %}
+        <li><a href="{% url 'detail' blog.id %}">{{ blog }}</a></li>
+    {% endfor %}
+
+{% endblock %}

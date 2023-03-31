@@ -1,0 +1,19 @@
+{% extends "testblog/layout.html" %}
+
+{% block title %}
+    Drafts 
+{% endblock %}
+
+{% block body %}
+
+<h1>Drafts :- </h1>
+
+<ul>
+    {% for draft in drafts %}
+        <li><a href="{% url 'detail' draft.id %}"> {{ draft.content }}</a></li>  
+    {% endfor %}
+
+    <br>
+    <a href="{% url 'index' %}"> <-- Home </a>
+</ul>
+{% endblock %}

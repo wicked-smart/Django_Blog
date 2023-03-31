@@ -1,0 +1,32 @@
+{% extends "testblog/layout.html" %}
+
+
+{% block title %}
+    login page
+{% endblock %}
+
+
+{% block body %}
+
+Not logged in?! <a href="{% url 'register' %}">register here</a><br><br>
+<h1>Login page!</h1>
+    
+    
+
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <label for="username">Username</label>
+        <input type="text" name="username">
+        &nbsp;&nbsp;
+
+        <label for="password">Password</label>
+        <input type="password" name="password">
+
+        <input type="submit" value="login">
+    </form>
+
+    {% if message %}
+        <h2 style="color: red">{{ message }}</h2>
+        <br>
+    {% endif %}
+{% endblock %}

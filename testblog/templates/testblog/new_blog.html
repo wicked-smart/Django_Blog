@@ -1,0 +1,56 @@
+{% extends "testblog/layout.html" %}
+
+{% block title %}
+    write a new blog
+{% endblock %}
+
+{% block body  %}
+
+<h2>write here your new blogpost!</h2>
+
+<a href="{% url 'index' %}"> <--&nbsp; home</a>
+<hr>
+
+{% if purpose == "editing draft" %}
+
+<form action="{% url 'post_blog' %}" method="post">
+
+    {% csrf_token %}
+
+    <label for="title"> title:  </label>
+    <input type="text" name="title" value="{{ draft.title }}">
+    <br><br>
+
+    <label for="blog"> blog content:  </label>
+    <textarea id="blog" name="content" rows="6" cols="60"></textarea>
+    <br><br>
+
+    <input type="submit" name="submit" value="post">
+    <input type="submit" name="submit" value="save as draft">
+
+
+</form>
+
+{% else %}
+
+<form action="{% url 'post_blog' %}" method="post">
+
+    {% csrf_token %}
+
+    <label for="title"> title:  </label>
+    <input type="text" name="title">
+    <br><br>
+
+    <label for="blog"> blog content:  </label>
+    <textarea id="blog" name="content" rows="6" cols="60"></textarea>
+    <br><br>
+
+    <input type="submit" name="submit" value="post">
+    <input type="submit" name="submit" value="save as draft">
+
+
+</form>
+
+{% endif %}
+
+{% endblock %}
